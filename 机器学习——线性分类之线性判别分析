@@ -1,0 +1,105 @@
+机器学习——线性分类之线性判别分析
+@[TOC]
+
+# 线性判别分析定义
+假设存在样本$X_{N\times p}$满足如下形式:
+
+$$
+X=\left ( x_{1} \ x_{2} \ ...\ x_{N}\right )^{T} 
+=\left(
+\begin{matrix}
+x^T_1 \\
+x^T_2 \\
+\vdots \\
+x^T_N \\
+\end{matrix}
+\right)_{N \times p}
+= \left( 
+\begin{matrix} 
+x_{11} & x_{12} & ... & x_{1p} \\ 
+x_{21} & x_{22} & ... & x_{2p} \\ 
+\vdots & \vdots & & \vdots \\ 
+x_{N1} & x_{N2} & ... & x_{Np} \\ 
+\end{matrix} 
+\right )_{N\times p}
+$$
+
+存在样本$Y_{N\times 1}$满足如下形式：
+
+$$
+Y =\left(
+ \begin{matrix} 
+ y_{1} \\ 
+ y_{2} \\ 
+ \vdots \\ 
+ y_{N} \\ 
+ \end{matrix} 
+ \right )_{N \times 1}
+$$
+
+$X$和$Y$组成$\left\{ \left( x_i,y_i\right) \right\}_{i=1}^{N}$样式样本点，并且$X\in \real^p,y_i \in \left\{ +1,-1\right\}$。
+且有$N_1$ 个 $x_{c1}=\left\{ x_i|y_i=+1 \right\},$$N_2$ 个 $x_{c2}=\left\{ x_i|y_i=-1 \right\},N_1+N_2=N$
+线性判别分析具有**类内小，类间大**的特点，我们定义：
+
+ $$z=\omega ^Tx_i \\
+ \bar{z}=\frac{1}{N}\sum_{i=1}^{N}z_i= \frac{1}{N}\sum_{i=1}^{N}\omega ^Tx_i \\
+ S_z=\sum_{i=1}^{N}(z_i-\bar{z})(z_i-\bar{z})^T
+ = \frac{1}{N}\sum_{i=1}^{N}(\omega ^Tx_i-\sum_{i=1}^{N}\omega ^Tx_i)(\omega ^Tx_i-\sum_{i=1}^{N}\omega ^Tx_i)^T
+ $$
+ 
+ 那么对于$c_1,c_2$类，有：
+ $c1:$
+ $$\bar{z_1}=\frac{1}{N_1}\sum_{i=1}^{N_1}\omega ^Tx_i \\
+ S_{z1}= \frac{1}{N_1}\sum_{i=1}^{N_1}(\omega ^Tx_i-\sum_{i=1}^{N_1}\omega ^Tx_i)(\omega ^Tx_i-\sum_{i=1}^{N_1}\omega ^Tx_i)^T
+ $$
+ 
+  $c2:$
+ $$\bar{z_2}=\frac{1}{N_2}\sum_{i=1}^{N_2}\omega ^Tx_i \\
+ S_{z2}= \frac{1}{N_2}\sum_{i=1}^{N_2}(\omega ^Tx_i-\sum_{i=1}^{N_2}\omega ^Tx_i)(\omega ^Tx_i-\sum_{i=1}^{N_2}\omega ^Tx_i)^T
+ $$
+
+线性判别分析具有**类间小，类内大**的特点，此处定义：
+
+ - 类间：$(\bar{z_1}-\bar{z_2})^2$
+ - 类内：$S_{z1}+S_{z2}$
+
+根据这一性质我们可构造损失函数：
+$$
+J(\omega)=\frac{(\bar{z_1}-\bar{z_2})^2}{S_1+S_2}
+$$
+其中分子：
+$$
+(\bar{z_1}-\bar{z_2})^2
+=(\frac{1}{N_1}\sum_{i=1}^{N_1}\omega ^Tx_i-\frac{1}{N_2}\sum_{i=1}^{N_2}\omega ^Tx_i)^2\\
+=\left\{\omega^T(\frac{1}{N_1}\sum_{i=1}^{N_1}x_i-\frac{1}{N_2}\sum_{i=1}^{N_2}x_i)\right\}^2\\
+=\omega^T(\bar{x}_{c1}-\bar{x}_{c2})(\bar{x}_{c1}-\bar{x}_{c2})^T\omega
+$$
+分母：
+$$
+S_{z1}+S_{z2}
+=\frac{1}{N_1}\sum_{i=1}^{N_1}(\omega ^Tx_i-\sum_{i=1}^{N_1}\omega ^Tx_i)(\omega ^Tx_i-\sum_{i=1}^{N_1}\omega ^Tx_i)^T\\+\frac{1}{N_2}\sum_{i=1}^{N_2}(\omega ^Tx_i-\sum_{i=1}^{N_2}\omega ^Tx_i)(\omega ^Tx_i-\sum_{i=1}^{N_2}\omega ^Tx_i)^T
+$$
+其中
+$$
+S_{z1}
+= \frac{1}{N_1}\sum_{i=1}^{N_1}(\omega ^Tx_i-\sum_{i=1}^{N_1}\omega ^Tx_i)(\omega ^Tx_i-\sum_{i=1}^{N_1}\omega ^Tx_i)^T\\
+= \frac{1}{N_1}\sum_{i=1}^{N_1}\omega ^T(x_i-\sum_{i=1}^{N_1}x_i)(x_i-\sum_{i=1}^{N_1}x_i)^T\omega\\
+= \omega ^T\left\{\frac{1}{N_1}\sum_{i=1}^{N_1}(x_i-\bar{x}_{c1})(x_i-\bar{x}_{c1})^T\right\}\omega\\
+=\omega^TS_{c1}\omega
+$$
+同理：
+$$
+S_{z2} =\omega^TS_{c2}\omega
+$$
+那么有：
+$$
+S_{z1}+S_{z2} = \omega^T(S_{c1}+S_{c2})\omega
+$$
+综上所述：
+$$
+J(\omega)
+=\frac{(\bar{z_1}-\bar{z_2})^2}{S_{z1}+S_{z2}}
+=\frac{\omega^T(\bar{x}_{c1}-\bar{x}_{c2})(\bar{x}_{c1}-\bar{x}_{c2})^T\omega}{\omega^T(S_{c1}+S_{c2})\omega}
+$$
+# 线性判别分析模型求解
+
